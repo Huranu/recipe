@@ -11,6 +11,7 @@ import {
 import List from "./model/List";
 import * as listView from "./view/listView";
 import Like from "./model/Like";
+import * as likesView from "./view/likesView";
 /**
  * web app iin tuluv
  * -hailtiin ur dun
@@ -24,6 +25,7 @@ hailtiin controller model>controller<view
 
 
 */
+likesView.toggleLikeMenu(0);
 
 const controlSearch = async () => {
   // 1.webees haisan ugiig gargaj avna.
@@ -63,6 +65,8 @@ const controlRecipe = async () => {
   // 1. url-ees id-iig salgah
   const id = window.location.hash.replace("#", "");
 
+  if (!state.likes) state.likes = new Like();
+
   if (id) {
     // 2. joriin modeliig uusgeh
     state.recipe = new Recipe(id);
@@ -77,7 +81,7 @@ const controlRecipe = async () => {
     state.recipe.calcTime();
     state.recipe.calcHuniiToo();
     // 6. joroo delgetsend gargana.
-    renderRecipe(state.recipe);
+    renderRecipe(state.recipe, state.likes.isLiked(id));
   }
 };
 // window.addEventListener("hashchange", controlRecipe);
@@ -105,20 +109,26 @@ const controlList = () => {
 // like controller
 const controllLike = () => {
   // like iin model uusgeh
-  state.likes = new Like();
+  if (!state.likes) state.likes = new Like();
   // haragdaj bga joriin id g oloh
   const currentRecipeId = state.recipe.id;
   // tuhain joriig like lsn esehiig oloh
   if (state.likes.isLiked(currentRecipeId)) {
     // like lsan bol like iig ustgah
+    state.likes.deleteLike(currentRecipeId);
+    likesView.toggleLikeBtn(false);
   } else {
-    state.likes.addLikes(
+    const newLike = state.likes.addLike(
       currentRecipeId,
       state.recipe.title,
       state.recipe.publisher,
       state.recipe.image_url
     );
+    likesView.renderLike(newLike);
+    likesView.toggleLikeBtn(true);
   }
+
+  likesView.toggleLikeMenu(state.likes.getNumOfLikes());
 };
 
 elements.recipeDiv.addEventListener("click", (e) => {
