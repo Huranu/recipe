@@ -18,4 +18,12 @@ export default class Recipe {
 
     console.log(result);
   }
+  calcTime() {
+    // Nairlaga burt oiroltsoogoor 5 min
+    this.time = this.ingredients.length * 5;
+  }
+
+  calcHuniiToo() {
+    this.huniiToo = 4;
+  }
 }
