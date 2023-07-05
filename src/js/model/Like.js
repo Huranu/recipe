@@ -1,6 +1,7 @@
 export default class Likes {
   constructor() {
-    this.likes = [];
+    this.readDataFromLocalStorage();
+    if (!this.likes) this.likes = [];
   }
 
   addLike(id, title, author, img) {
@@ -11,6 +12,8 @@ export default class Likes {
       img,
     };
     this.likes.push(like);
+    // storage ruu hadgalna
+    this.saveDataToLocation();
     return like;
   }
 
@@ -18,6 +21,8 @@ export default class Likes {
     const index = this.likes.findIndex((el) => el.id === id);
 
     this.likes.splice(index, 1);
+
+    this.saveDataToLocation();
   }
 
   isLiked(id) {
@@ -29,5 +34,13 @@ export default class Likes {
 
   getNumOfLikes() {
     return this.likes.length;
+  }
+
+  saveDataToLocation() {
+    localStorage.setItem("likes", JSON.stringify(this.likes));
+  }
+
+  readDataFromLocalStorage() {
+    this.likes = JSON.parse(localStorage.getItem("likes"));
   }
 }

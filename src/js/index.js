@@ -25,7 +25,6 @@ hailtiin controller model>controller<view
 
 
 */
-likesView.toggleLikeMenu(0);
 
 const controlSearch = async () => {
   // 1.webees haisan ugiig gargaj avna.
@@ -65,8 +64,6 @@ const controlRecipe = async () => {
   // 1. url-ees id-iig salgah
   const id = window.location.hash.replace("#", "");
 
-  if (!state.likes) state.likes = new Like();
-
   if (id) {
     // 2. joriin modeliig uusgeh
     state.recipe = new Recipe(id);
@@ -90,6 +87,15 @@ const controlRecipe = async () => {
 ["hashchange", "load"].forEach((event) =>
   window.addEventListener(event, controlRecipe)
 );
+
+window.addEventListener("load", (e) => {
+  // shineer like modeliig load hiih uyd uusgeh
+  if (!state.likes) state.likes = new Like();
+
+  likesView.toggleLikeMenu(state.likes.getNumOfLikes());
+
+  state.likes.likes.forEach((like) => likesView.renderLike(like));
+});
 
 /**
  * Nairlaganii controller
@@ -116,6 +122,8 @@ const controllLike = () => {
   if (state.likes.isLiked(currentRecipeId)) {
     // like lsan bol like iig ustgah
     state.likes.deleteLike(currentRecipeId);
+    // like iin tsesnees ustgah
+    likesView.deleteLike(currentRecipeId);
     likesView.toggleLikeBtn(false);
   } else {
     const newLike = state.likes.addLike(

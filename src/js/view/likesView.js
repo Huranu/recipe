@@ -20,11 +20,18 @@ export const renderLike = (newLike) => {
                         </figure>
                         <div class="likes__data">
                             <h4 class="likes__name">${newLike.title}</h4>
-                            <p class="likes__author">The ${newLike.publisher}</p>
+                            <p class="likes__author">${newLike.author}</p>
                         </div>
                     </a>
                 </li>
     `;
 
   elements.likesList.insertAdjacentHTML("beforeend", html);
+};
+
+export const deleteLike = (id) => {
+  const li = document.querySelector(
+    `.likes__link[href*="${id}"]`
+  ).parentElement;
+  if (li) li.parentElement.removeChild(li);
 };
